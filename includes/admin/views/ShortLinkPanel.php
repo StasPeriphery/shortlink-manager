@@ -11,7 +11,11 @@ class ShortLinkPanel
     }
 
 
-    private function update()
+    /**
+     * update/add url to db
+     * @return void
+     */
+    private function update(): void
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (isset($_POST['wpsm_add_link'])) {
@@ -33,7 +37,11 @@ class ShortLinkPanel
     }
 
 
-    private function delete()
+    /**
+     * delete url from db
+     * @return void
+     */
+    private function delete(): void
     {
         if (!empty($_POST['shortlinks']) && isset($_POST['bulk_action']) && $_POST['bulk_action'] === 'delete') {
 
@@ -49,7 +57,12 @@ class ShortLinkPanel
         }
     }
 
-    private function search(&$links)
+    /**
+     * search url from db
+     * @param $links
+     * @return string
+     */
+    private function search(&$links): string
     {
         $search = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
         if (!empty($search)) {
@@ -65,35 +78,20 @@ class ShortLinkPanel
     }
 
 
-    function sm_admin_page()
+    /**
+     * render admin panel list
+     * @return void
+     */
+    function sm_admin_page(): void
     {
         AdminAccess::check_access();
 
         $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
         $links_per_page = 20;
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $this->update();
+        $this->delete();
 
-            $this->update();
-            $this->delete();
-
-            if (isset($_POST['wpsm_add_link'])) {
-
-                check_admin_referer('shortlink_key');
-
-                $short = esc_url_raw($_POST['short']);
-                $long = esc_url_raw($_POST['long']);
-
-                if (!empty($short) && !empty($long)) {
-
-                    $db_data_link = get_option('my_shortlink');
-                    $db_data_link[$short] = ['long_url' => $long, 'clicks' => 0, 'ip' => '', 'referer' => '', 'date' => ''];
-                    update_option('my_shortlink', $db_data_link);
-                }
-            }
-
-
-        }
 
         $links = [];
 
@@ -124,8 +122,7 @@ class ShortLinkPanel
         <div class="wrap">
             <h1><?php _e('Shortlink Manager', 'shortlink'); ?></h1>
 
-            <h2><?php _e('Add new link
-', 'shortlink'); ?></h2>
+            <h2><?php _e('Add new link', 'shortlink'); ?></h2>
             <form method="post">
                 <?php wp_nonce_field('shortlink_key'); ?>
                 <table class="form-table">
@@ -138,7 +135,8 @@ class ShortLinkPanel
                         <td><input type="url" name="long" id="long" required></td>
                     </tr>
                 </table>
-                <button type="submit" name="wpsm_add_link" class="button button-primary"><?php _e('Add', 'shortlink'); ?>
+                <button type="submit" name="wpsm_add_link"
+                        class="button button-primary"><?php _e('Add', 'shortlink'); ?>
 
                 </button>
             </form>
@@ -210,7 +208,7 @@ class ShortLinkPanel
                             «
                             <?php _e('Back', 'shortlink'); ?></a>
                     <?php endif; ?>
-                    <span><?php _e('Page', 'shortlink'); ?> <?php echo $current_page; ?> <?php _e('of', 'shortlink'); ?> <?php echo $total_pages; ?></span>
+                    <span><?php _e('Page', 'shortlink'); ?><?php echo $current_page; ?><?php _e('of', 'shortlink'); ?><?php echo $total_pages; ?></span>
                     <?php if ($current_page < $total_pages): ?>
                         <a class="button"
                            href="?page=sm_shortlinks&paged=<?php echo($current_page + 1); ?>&search=<?php echo esc_attr($search); ?>"><?php _e('', 'shortlink'); ?>

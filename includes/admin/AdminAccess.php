@@ -5,13 +5,20 @@ namespace ShortLinkManager\Admin;
 class AdminAccess
 {
 
-
+    /**
+     * filter of access
+     * @return mixed|null
+     */
     public static function get_allowed_roles()
     {
         return apply_filters('wpsm_allowed_roles', ['administrator']);
     }
 
-    public static function check_access()
+    /**
+     * check access
+     * @return void
+     */
+    public static function check_access() :void
     {
         $allowed_roles = static::get_allowed_roles();
         $user = wp_get_current_user();

@@ -7,6 +7,10 @@ use ShortLinkManager\Admin\views\ShortLinkPanel;
 class AdminMenu
 {
 
+    /**
+     * object of ShortLinkPanel
+     * @var ShortLinkPanel
+     */
     private $short_link_panel = null;
 
 
@@ -16,7 +20,11 @@ class AdminMenu
     }
 
 
-    function add_shortlink_manager_menu() : void
+    /**
+     * create menu
+     * @return void
+     */
+    function add_shortlink_manager_menu(): void
     {
         add_menu_page(
             'Shortlink Manager',
